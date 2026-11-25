@@ -46,6 +46,14 @@ function assertValidLine(line: string): void {
   if (line.includes("\r") || line.includes("\n")) {
     throw new Error("Line must not contain carriage returns or newlines");
   }
+  // Reject any control characters (e.g. tabs, NUL) hiding in the line.
+  if (/[\u0000-\u001F\u007F]/.test(line)) {
+    throw new Error("Line must not contain control characters");
+  }
+  // Reject consecutive double spaces; the single line must stay tight.
+  if (/  /.test(line)) {
+    throw new Error("Line must not contain consecutive double spaces");
+  }
 }
 
 assertValidLine(LINE);
